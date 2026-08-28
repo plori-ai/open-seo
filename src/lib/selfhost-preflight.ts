@@ -270,7 +270,7 @@ export function formatPreflightReport(result: PreflightResult): string {
   lines.push(
     result.failed
       ? "\nPreflight failed — fix the [FAIL] items above and restart. Nothing was started."
-      : "\nPreflight passed. The app now builds inside the container (~1-2 minutes on first start before it serves).",
+      : "\nPreflight passed. The container will apply database migrations and verify its bundled app build before serving.",
   );
 
   return lines.join("\n");

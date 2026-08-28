@@ -25,7 +25,7 @@ Set `DATAFORSEO_API_KEY` in `.env` using the [DataForSEO setup guide](./DATAFORS
 docker compose up -d
 ```
 
-Open `http://localhost:<PORT>` (default `3001`). The first start builds the app and may take 1-2 minutes; follow progress with `docker compose logs -f`.
+Open `http://localhost:<PORT>` (default `3001`). Published images include the default Docker build, so startup normally runs only setup checks and database migrations. If you override a build-related environment value, OpenSEO rebuilds once before it starts; follow progress with `docker compose logs -f`.
 
 Optional env values:
 
@@ -89,7 +89,7 @@ docker compose down
 
 ## Health and troubleshooting
 
-Startup checks appear in `docker compose logs` before the build. Once running, `/api/health` reports configuration and database status, and `docker compose ps` reports container health.
+Startup checks appear in `docker compose logs` before the build fingerprint check. Once running, `/api/health` reports configuration and database status, and `docker compose ps` reports container health.
 
 ## Troubleshooting environment variables
 
