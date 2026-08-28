@@ -14,6 +14,11 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
+# Bake the default Docker auth mode into the image. If a deployment overrides
+# a build-relevant env value, the entrypoint detects that and rebuilds once.
+ARG OPENSEO_BUILD_MODE=local_noauth
+RUN AUTH_MODE="${OPENSEO_BUILD_MODE}" sh scripts/selfhost-build.sh
+
 EXPOSE 3001
 
 # Readiness probe against the unauthenticated setup/health endpoint. The long
@@ -22,8 +27,6 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3001)+'/api/health').then(function(r){process.exit(r.ok?0:1)}).catch(function(){process.exit(1)})"
 
-# Startup (preflight, migrations, conditional build, serve) lives in
-# docker-entrypoint.sh. The repo .npmrc raises the V8 heap ceiling
-# (node-options) so the ~7400-module SSR build doesn't OOM under Node's ~2GB
-# default.
+# Startup (preflight, migrations, build fingerprint check, serve) lives in
+# docker-entrypoint.sh. The published image normally reuses the build above.
 CMD ["sh", "docker-entrypoint.sh"]
