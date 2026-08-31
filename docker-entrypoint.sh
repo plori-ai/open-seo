@@ -18,4 +18,10 @@ fi
 
 sh scripts/selfhost-build.sh
 
+# A client that disappears mid-response must not be able to kill the server;
+# see scripts/selfhost-socket-guard.cjs. Preloading keeps the serve command
+# identical to upstream's.
+NODE_OPTIONS="--require /app/scripts/selfhost-socket-guard.cjs ${NODE_OPTIONS:-}"
+export NODE_OPTIONS
+
 exec pnpm exec vite preview --host 0.0.0.0 --port "${PORT:-3001}"
