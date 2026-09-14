@@ -64,16 +64,20 @@
       "migrations_dir": "drizzle",
     },
   ],
-  // Postgres scale path — same rules as wrangler.jsonc: only local Postgres
-  // dev reads this block. Uncomment together with the block in wrangler.jsonc
-  // per docs/LOCAL_POSTGRES.md.
-  // "hyperdrive": [
-  //   {
-  //     "binding": "HYPERDRIVE",
-  //     "id": "9d64ccfb559f44449ce52a143912f898",
-  //     "localConnectionString": "postgres://openseo:openseo@localhost:5433/openseo",
-  //   },
-  // ],
+  // Postgres scale path — same rules as wrangler.jsonc, and enabled for the
+  // same reason: this worker runs SiteAuditWorkflow, which calls withPgClient,
+  // so under DATABASE_PROVIDER=postgres it needs its own HYPERDRIVE binding.
+  // Local dev and Docker self-hosts resolve it through localConnectionString;
+  // override it without editing this file with
+  // CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE.
+  // Alchemy deployments provision their own Hyperdrive binding.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "9d64ccfb559f44449ce52a143912f898",
+      "localConnectionString": "postgres://openseo:openseo@localhost:5433/openseo",
+    },
+  ],
   "r2_buckets": [
     {
       "bucket_name": "open-seo",
